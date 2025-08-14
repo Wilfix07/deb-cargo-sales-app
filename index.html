@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="DEB Cargo Sales" />
+    <meta name="application-name" content="DEB Cargo Sales" />
+    <meta name="msapplication-TileColor" content="#2563eb" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    
+    <!-- Additional mobile optimizations -->
+    <meta name="HandheldFriendly" content="true" />
+    <meta name="MobileOptimized" content="width" />
+    <meta name="apple-mobile-web-app-orientations" content="portrait" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="orientation" content="portrait" />
+    
+    <!-- Prevent text size adjustment -->
+    <meta name="format-detection" content="telephone=no, date=no, email=no, address=no" />
+    
+    <!-- iOS specific -->
+    <meta name="apple-touch-fullscreen" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- Android specific -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#2563eb" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1e40af" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="/images/logo.jpg" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/logo.jpg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/logo.jpg" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/images/logo.jpg" />
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/images/logo.jpg" as="image" type="image/jpeg" />
+    
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    
+    <title>DEB CARGO SHIPPING LLC - Sales Data Collector</title>
+    
+    <style>
+      /* Critical CSS for mobile app loading */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        background: #f5f5f5;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      #root {
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+      
+      /* Loading spinner */
+      .app-loading {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        min-height: 100dvh;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        color: white;
+      }
+      
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <!-- Loading screen while app initializes -->
+      <div class="app-loading">
+        <div class="text-center">
+          <div class="loading-spinner"></div>
+          <p class="mt-4 text-lg font-semibold">DEB CARGO SHIPPING LLC</p>
+          <p class="text-sm opacity-80">Loading Sales System...</p>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Mobile app optimizations
+      (function() {
+        // Prevent zoom on input focus
+        document.addEventListener('touchstart', function(e) {
+          if (e.touches.length > 1) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+        
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+          const now = (new Date()).getTime();
+          if (now - lastTouchEnd <= 300) {
+            e.preventDefault();
+          }
+          lastTouchEnd = now;
+        }, { passive: false });
+        
+        // Set viewport height CSS variable
+        function setViewportHeight() {
+          const vh = window.innerHeight * 0.01;
+          document.documentElement.style.setProperty('--vh', vh + 'px');
+        }
+        
+        setViewportHeight();
+        window.addEventListener('resize', setViewportHeight);
+        window.addEventListener('orientationchange', function() {
+          setTimeout(setViewportHeight, 100);
+        });
+        
+        // Hide loading screen when app is ready
+        window.addEventListener('load', function() {
+          setTimeout(function() {
+            const loading = document.querySelector('.app-loading');
+            if (loading) {
+              loading.style.opacity = '0';
+              loading.style.transition = 'opacity 0.3s ease';
+              setTimeout(function() {
+                loading.style.display = 'none';
+              }, 300);
+            }
+          }, 500);
+        });
+      })();
+      
+      // Register service worker for PWA
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+      
+      // Add to home screen prompt
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show install button or banner
+        const installBanner = document.createElement('div');
+        installBanner.innerHTML = `
+          <div style="position: fixed; bottom: 80px; left: 16px; right: 16px; background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <p style="margin: 0; font-weight: 600; color: #1f2937;">Install DEB Cargo App</p>
+              <p style="margin: 0; font-size: 14px; color: #6b7280;">Add to home screen for better experience</p>
+            </div>
+            <button id="install-btn" style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 500;">Install</button>
+            <button id="dismiss-btn" style="background: none; border: none; color: #6b7280; margin-left: 8px;">×</button>
+          </div>
+        `;
+        
+        document.body.appendChild(installBanner);
+        
+        document.getElementById('install-btn').addEventListener('click', () => {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+              console.log('User accepted the install prompt');
+            }
+            deferredPrompt = null;
+            installBanner.remove();
+          });
+        });
+        
+        document.getElementById('dismiss-btn').addEventListener('click', () => {
+          installBanner.remove();
+        });
+        
+        // Auto-hide after 10 seconds
+        setTimeout(() => {
+          if (installBanner.parentNode) {
+            installBanner.remove();
+          }
+        }, 10000);
+      });
+    </script>
+  </body>
+</html>
