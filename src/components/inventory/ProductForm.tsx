@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Save, X, Package, DollarSign, Hash, FileText } from 'lucide-react';
 import { Logo } from '../Logo';
 import { Product, Category, Supplier } from '../../types/inventory';
 import { InventoryService } from '../../services/inventoryService';
+import { MobileFormContainer } from '../MobileFormContainer';
 
 interface ProductFormProps {
   product?: Product;
@@ -32,7 +33,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
-  const inventoryService = new InventoryService();
+  const inventoryService = useMemo(() => new InventoryService(), []);
 
   useEffect(() => {
     loadData();
@@ -85,8 +86,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     
     if (!validateForm()) {
       return;
@@ -105,37 +106,18 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex flex-col">
-      <div className="flex-1 bg-white overflow-hidden">
-        <div className="mobile-header safe-area-top">
-          <div className="flex items-center justify-between p-4">
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={onClose}
-                className="tap-target rounded-full hover:bg-white hover:bg-opacity-20 transition-colors"
-              >
-                <X className="w-6 h-6 text-white" />
-              </button>
-              <div className="flex items-center space-x-2">
-                <Logo size="small" />
-                <div>
-                  <h1 className="text-lg font-bold text-white">
-                    {product ? 'Modifye Pwodwi' : 'Ajoute Pwodwi'}
-                  </h1>
-                  <p className="text-xs text-blue-100">DEB CARGO SHIPPING LLC</p>
-                </div>
-              </div>
-            </div>
-            
-            <Package className="w-6 h-6 text-white" />
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 space-y-4 safe-area-bottom">
+    <MobileFormContainer
+      title={product ? 'Modifye Pwodwi' : 'Ajoute Pwodwi'}
+      onClose={onClose}
+      onSave={() => handleSubmit()}
+      enableSwipeNavigation={true}
+      scrollToTopOnMount={true}
+    >
+      <form onSubmit={handleSubmit} className="mobile-form">
           <div className="space-y-4">
             {/* Product Code */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <div className="mobile-form-group">
+              <label className="mobile-label">
                 Kòd Pwodwi *
               </label>
               <div className="relative">
@@ -413,7 +395,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </MobileFormContainer>
   );
 };

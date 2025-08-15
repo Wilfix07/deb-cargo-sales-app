@@ -60,6 +60,8 @@
     -moz-user-select: text;
     -ms-user-select: text;
     user-select: text;
+    /* Prevent zoom on focus for iOS */
+    transform: translate3d(0, 0, 0);
   }
   
   /* Mobile-optimized buttons with Android Material Design */
@@ -658,17 +660,36 @@
     @apply bg-blue-50 border border-blue-200 rounded-lg p-4 text-blue-800;
   }
   
-  /* Mobile form styling */
+    /* Mobile form styling */
   .mobile-form {
     @apply space-y-4 p-4;
+    /* Enable smooth scrolling */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
-  
+
   .mobile-form-group {
     @apply space-y-2;
+    /* Optimize for touch scrolling */
+    will-change: transform;
   }
-  
+
   .mobile-label {
     @apply block text-sm font-semibold text-gray-700;
+  }
+
+  /* Enhanced form container */
+  .mobile-form-container {
+    /* Smooth momentum scrolling */
+    -webkit-overflow-scrolling: touch;
+    /* Prevent overscroll */
+    overscroll-behavior: contain;
+    /* Smooth scrolling behavior */
+    scroll-behavior: smooth;
+    /* Hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000;
   }
   
   /* Mobile list styling */

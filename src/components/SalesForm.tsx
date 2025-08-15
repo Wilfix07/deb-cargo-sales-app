@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { SalesRecord } from '../types';
 import { InventoryService } from '../services/inventoryService';
 import { Product } from '../types/inventory';
+import { MobileFormContainer } from './MobileFormContainer';
 
 interface SalesFormProps {
   onSave: (record: Omit<SalesRecord, 'id' | 'timestamp'>) => Promise<{ success: boolean; error?: string }>;
@@ -69,8 +70,8 @@ export const SalesForm: React.FC<SalesFormProps> = ({
     return null;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     const err = validate();
     if (err) {
       setError(err);
@@ -102,19 +103,20 @@ export const SalesForm: React.FC<SalesFormProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex">
-      <div className="bg-white w-full max-w-md mx-auto my-auto rounded-2xl overflow-hidden">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-lg font-semibold">{editRecord ? 'Modifye Vant' : 'Sales Entry'}</h2>
-          <button onClick={onClose} className="text-gray-600">×</button>
-        </div>
-        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+    <MobileFormContainer
+      title={editRecord ? 'Modifye Vant' : 'Sales Entry'}
+      onClose={onClose}
+      onSave={() => handleSubmit()}
+      enableSwipeNavigation={true}
+      scrollToTopOnMount={true}
+    >
+      <form onSubmit={handleSubmit} className="mobile-form">
           {error && (
             <div className="bg-red-50 text-red-700 text-sm p-2 rounded border border-red-200">{error}</div>
           )}
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Product code</label>
+          <div className="mobile-form-group">
+            <label className="mobile-label">Product code</label>
             <input
               className="mobile-input"
               value={productCode}
@@ -123,8 +125,8 @@ export const SalesForm: React.FC<SalesFormProps> = ({
             />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Search product</label>
+          <div className="mobile-form-group">
+            <label className="mobile-label">Search product</label>
             <input
               className="mobile-input"
               value={search}
@@ -152,9 +154,9 @@ export const SalesForm: React.FC<SalesFormProps> = ({
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium mb-1">Quantity</label>
+          <div className="mobile-form-row">
+            <div className="mobile-form-group">
+              <label className="mobile-label">Quantity</label>
               <input
                 type="number"
                 min={1}
@@ -163,8 +165,8 @@ export const SalesForm: React.FC<SalesFormProps> = ({
                 onChange={(e) => setQuantity(parseInt(e.target.value) || 0)}
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Unit price ($HT)</label>
+            <div className="mobile-form-group">
+              <label className="mobile-label">Unit price ($HT)</label>
               <input
                 type="number"
                 min={0}
@@ -183,13 +185,13 @@ export const SalesForm: React.FC<SalesFormProps> = ({
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Customer name</label>
+          <div className="mobile-form-group">
+            <label className="mobile-label">Customer name</label>
             <input className="mobile-input" value={customerName} onChange={(e) => setCustomerName(e.target.value)} />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Payment method</label>
+          <div className="mobile-form-group">
+            <label className="mobile-label">Payment method</label>
             <select className="mobile-input" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as 'CASH' | 'CARD' | 'MOBILE' | 'OTHER')}>
               <option value="CASH">Cash</option>
               <option value="CARD">Card</option>
@@ -198,8 +200,8 @@ export const SalesForm: React.FC<SalesFormProps> = ({
             </select>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Payment reference (optional)</label>
+          <div className="mobile-form-group">
+            <label className="mobile-label">Payment reference (optional)</label>
             <input className="mobile-input" value={paymentReference} onChange={(e) => setPaymentReference(e.target.value)} />
           </div>
 
@@ -208,7 +210,6 @@ export const SalesForm: React.FC<SalesFormProps> = ({
             <button type="submit" className="btn-primary flex-1" disabled={loading}>{loading ? 'Saving...' : (editRecord ? 'Modifye Vant' : 'Save Sale')}</button>
           </div>
         </form>
-      </div>
-    </div>
+    </MobileFormContainer>
   );
 };
