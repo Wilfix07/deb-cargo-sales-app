@@ -21,6 +21,8 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  VITE_SUPABASE_URL = "https://inavcjatglkpvrpjrofq.supabase.co"
+  VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImluYXZjamF0Z2xrcHZycGpyb2ZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwNTQ4MTYsImV4cCI6MjA3MDYzMDgxNn0.ePQs01QHBisg4nJqVHY39WFPxRQxxYIZ4i4PgU0S2e4"
 
 [[headers]]
   for = "/assets/*"
