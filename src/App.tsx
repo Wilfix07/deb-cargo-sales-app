@@ -28,10 +28,12 @@ import { useRealtimeStock } from './hooks/useRealtimeStock';
 import { useRealtimeSales } from './hooks/useRealtimeSales';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { SalesRecord, DashboardStats, UserRole } from './types';
+import { Product, StockMovement } from './types/inventory';
 import { ROLE_PERMISSIONS, INVENTORY_PERMISSIONS } from './types';
 import { InventoryService } from './services/inventoryService';
 import { format } from 'date-fns';
 import { Calendar, Package, Shield } from 'lucide-react';
+import { useMemo } from 'react';
 
 type ViewType = 'dashboard' | 'history' | 'inventory' | 'settings' | 'reports' | 
                 'products' | 'categories' | 'suppliers' | 'add-product' | 'edit-product' |
@@ -58,14 +60,14 @@ function App() {
   const [showSupplierForm, setShowSupplierForm] = useState(false);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [editingRecord, setEditingRecord] = useState<SalesRecord | null>(null);
-  const [editingProduct, setEditingProduct] = useState<any>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [scannedData, setScannedData] = useState<string>('');
   const [scanType, setScanType] = useState<'qr' | 'barcode' | 'manual'>('manual');
   const [dataError, setDataError] = useState<string | null>(null);
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   // Services
-  const inventoryService = new InventoryService();
+  const inventoryService = useMemo(() => new InventoryService(), []);
 
   // Check for password reset in URL
   useEffect(() => {
@@ -95,8 +97,10 @@ function App() {
   };
 
   const handleSaveSale = async (record: Omit<SalesRecord, 'id' | 'timestamp'>) => {
-    console.log('App: handleSaveSale called with record:', record);
-    console.log('App: Current user:', user);
+    if (import.meta.env.DEV) {
+      console.log('App: handleSaveSale called with record:', record);
+      console.log('App: Current user:', user);
+    }
     
     if (!user) return { success: false, error: 'User not authenticated' };
 
@@ -105,14 +109,20 @@ function App() {
       userId: user.id
     };
     
-    console.log('App: Record with user ID:', recordWithUser);
+    if (import.meta.env.DEV) {
+      console.log('App: Record with user ID:', recordWithUser);
+    }
 
     try {
       if (editingRecord) {
         // Update existing record
-        console.log('App: Calling salesService.updateSalesRecord with:', editingRecord.id, recordWithUser);
+        if (import.meta.env.DEV) {
+          console.log('App: Calling salesService.updateSalesRecord with:', editingRecord.id, recordWithUser);
+        }
         const result = await salesService.updateSalesRecord(editingRecord.id, recordWithUser);
-        console.log('App: updateSalesRecord result:', result);
+        if (import.meta.env.DEV) {
+          console.log('App: updateSalesRecord result:', result);
+        }
         
         if (result.success) {
           await loadDashboardData();
@@ -125,9 +135,13 @@ function App() {
         }
       } else {
         // Create new record
-        console.log('App: Calling salesService.createSalesRecord with:', recordWithUser);
+        if (import.meta.env.DEV) {
+          console.log('App: Calling salesService.createSalesRecord with:', recordWithUser);
+        }
         const result = await salesService.createSalesRecord(recordWithUser);
-        console.log('App: createSalesRecord result:', result);
+        if (import.meta.env.DEV) {
+          console.log('App: createSalesRecord result:', result);
+        }
         
         if (result.success) {
           await refreshSales();
@@ -191,7 +205,7 @@ function App() {
     window.URL.revokeObjectURL(url);
   };
 
-  const handleInventoryNavigation = (view: string, data?: any) => {
+  const handleInventoryNavigation = (view: string, data?: Product) => {
     switch (view) {
       case 'add-product':
         setEditingProduct(null);
@@ -218,7 +232,7 @@ function App() {
     }
   };
 
-  const handleSaveProduct = async (productData: any) => {
+  const handleSaveProduct = async (productData: Omit<Product, 'id' | 'created_at' | 'updated_at'>) => {
     if (editingProduct) {
       const result = await inventoryService.updateProduct(editingProduct.id, productData);
       if (result.success) {
@@ -233,7 +247,7 @@ function App() {
     }
   };
 
-  const handleSaveStockMovement = async (movementData: any) => {
+  const handleSaveStockMovement = async (movementData: Omit<StockMovement, 'id' | 'created_at'>) => {
     const result = await inventoryService.createStockMovement(movementData);
     if (result.success) {
       setShowStockMovementForm(false);

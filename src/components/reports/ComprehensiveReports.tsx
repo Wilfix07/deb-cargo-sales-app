@@ -12,9 +12,10 @@ import { InventoryService } from '../../services/inventoryService';
 import { SupabaseSalesService } from '../../services/supabaseSales';
 import { useSupabaseAuth } from '../../hooks/useSupabaseAuth';
 import { format, subDays, isWithinInterval, startOfMonth, endOfMonth, eachDayOfInterval } from 'date-fns';
+import { useMemo } from 'react';
 
 interface ComprehensiveReportsProps {
-  onNavigate: (view: string, data?: any) => void;
+  onNavigate: (view: string, data?: unknown) => void;
 }
 
 interface ReportData {
@@ -85,8 +86,8 @@ export const ComprehensiveReports: React.FC<ComprehensiveReportsProps> = ({ onNa
   const [selectedReport, setSelectedReport] = useState('overview');
 
   const { user } = useSupabaseAuth();
-  const inventoryService = new InventoryService();
-  const salesService = new SupabaseSalesService();
+  const inventoryService = useMemo(() => new InventoryService(), []);
+  const salesService = useMemo(() => new SupabaseSalesService(), []);
 
   useEffect(() => {
     loadReportData();

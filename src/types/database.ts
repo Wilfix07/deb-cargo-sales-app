@@ -50,6 +50,8 @@ export type Database = {
           unit_price: number
           total_amount: number
           customer_name: string
+          payment_method: 'CASH' | 'CARD' | 'MOBILE' | 'OTHER'
+          payment_reference: string | null
           scan_type: 'qr' | 'barcode' | 'manual'
           scanned_data: string | null
           user_id: string
@@ -63,6 +65,8 @@ export type Database = {
           unit_price: number
           total_amount: number
           customer_name: string
+          payment_method?: 'CASH' | 'CARD' | 'MOBILE' | 'OTHER'
+          payment_reference?: string | null
           scan_type?: 'qr' | 'barcode' | 'manual'
           scanned_data?: string | null
           user_id: string
@@ -76,6 +80,8 @@ export type Database = {
           unit_price?: number
           total_amount?: number
           customer_name?: string
+          payment_method?: 'CASH' | 'CARD' | 'MOBILE' | 'OTHER'
+          payment_reference?: string | null
           scan_type?: 'qr' | 'barcode' | 'manual'
           scanned_data?: string | null
           user_id?: string
@@ -92,6 +98,7 @@ export type Database = {
     Enums: {
       user_role: 'Admin' | 'Manager' | 'Chef Teller' | 'Teller'
       scan_type: 'qr' | 'barcode' | 'manual'
+      payment_method: 'CASH' | 'CARD' | 'MOBILE' | 'OTHER'
     }
     CompositeTypes: {
       [_ in never]: never

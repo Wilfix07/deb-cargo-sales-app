@@ -31,7 +31,7 @@ export const SalesForm: React.FC<SalesFormProps> = ({
   const [paymentMethod, setPaymentMethod] = useState<'CASH' | 'CARD' | 'MOBILE' | 'OTHER'>(editRecord?.paymentMethod || 'CASH');
   const [paymentReference, setPaymentReference] = useState<string>(editRecord?.paymentReference || '');
 
-  const inventoryService = new InventoryService();
+  const inventoryService = useMemo(() => new InventoryService(), []);
 
   useEffect(() => {
     const load = async () => {
@@ -190,7 +190,7 @@ export const SalesForm: React.FC<SalesFormProps> = ({
 
           <div>
             <label className="block text-sm font-medium mb-1">Payment method</label>
-            <select className="mobile-input" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as any)}>
+            <select className="mobile-input" value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value as 'CASH' | 'CARD' | 'MOBILE' | 'OTHER')}>
               <option value="CASH">Cash</option>
               <option value="CARD">Card</option>
               <option value="MOBILE">Mobile</option>

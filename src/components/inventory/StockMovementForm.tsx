@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Save, X, Package, TrendingUp, TrendingDown, RotateCcw } from 'lucide-react';
 import { Logo } from '../Logo';
 import { Product } from '../../types/inventory';
 import { InventoryService } from '../../services/inventoryService';
 import { useSupabaseAuth } from '../../hooks/useSupabaseAuth';
 
+import { StockMovement } from '../../types/inventory';
+
 interface StockMovementFormProps {
-  onSave: (movement: any) => void;
+  onSave: (movement: Omit<StockMovement, 'id' | 'created_at'>) => void;
   onClose: () => void;
 }
 
@@ -26,7 +28,7 @@ export const StockMovementForm: React.FC<StockMovementFormProps> = ({ onSave, on
   const [loading, setLoading] = useState(false);
 
   const { user } = useSupabaseAuth();
-  const inventoryService = new InventoryService();
+  const inventoryService = useMemo(() => new InventoryService(), []);
 
   useEffect(() => {
     loadProducts();
