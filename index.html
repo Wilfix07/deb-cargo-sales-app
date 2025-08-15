@@ -151,16 +151,54 @@
         });
       })();
       
-      // Register service worker for PWA
+      // Register service worker for PWA (production optimized)
       if ('serviceWorker' in navigator) {
+        const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
+          if (isDev) {
+            console.log('Development mode: Service Worker registration with dev-friendly settings');
+          } else {
+            console.log('Production mode: Full Service Worker registration');
+          }
+          
+          navigator.serviceWorker.register('/sw.js', {
+            updateViaCache: isDev ? 'none' : 'imports' // Disable caching in dev
+          })
             .then((registration) => {
-              console.log('SW registered: ', registration);
+              console.log('SW registered successfully:', registration);
+              
+              // In development, update immediately to avoid conflicts
+              if (isDev && registration.waiting) {
+                registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+              }
+              
+              // Listen for updates
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                if (newWorker) {
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      console.log('New service worker available');
+                      if (isDev) {
+                        // Auto-update in development
+                        window.location.reload();
+                      }
+                    }
+                  });
+                }
+              });
             })
             .catch((registrationError) => {
-              console.log('SW registration failed: ', registrationError);
+              console.error('SW registration failed:', registrationError);
             });
+        });
+        
+        // Handle service worker messages
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data && event.data.type === 'RELOAD_PAGE') {
+            window.location.reload();
+          }
         });
       }
       

@@ -113,59 +113,87 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
       enableSwipeNavigation={true}
       scrollToTopOnMount={true}
     >
-      <form onSubmit={handleSubmit} className="mobile-form">
-          <div className="space-y-4">
-            {/* Product Code */}
-            <div className="mobile-form-group">
-              <label className="mobile-label">
-                Kòd Pwodwi *
-              </label>
-              <div className="relative">
-                <Hash className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={formData.code}
-                  onChange={(e) => handleInputChange('code', e.target.value)}
-                  className={`mobile-input pl-10 ${
-                    errors.code ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  placeholder="Antre kòd pwodwi a"
-                />
-              </div>
-              {errors.code && (
-                <p className="text-red-500 text-sm mt-1">{errors.code}</p>
-              )}
-            </div>
+      <div className="mobile-form-section">
+        <div className="mobile-form-header">
+          <h2 className="mobile-form-title">
+            {product ? 'Modifye Pwodwi' : 'Nouvo Pwodwi'}
+          </h2>
+          <p className="mobile-form-subtitle">
+            {product ? 'Modifye enfòmasyon pwodwi a' : 'Ajoute nouvo pwodwi nan stock la'}
+          </p>
+        </div>
 
-            {/* Product Name */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Non Pwodwi *
-              </label>
+        <form onSubmit={handleSubmit} className="mobile-form">
+          {/* Basic Information */}
+          <div className="mobile-form-group">
+            <label className="mobile-label required">
+              Kòd Pwodwi
+            </label>
+            <div className="relative">
+              <Hash className="absolute left-3 top-4 w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                value={formData.code}
+                onChange={(e) => handleInputChange('code', e.target.value)}
+                className={`mobile-input pl-12 ${
+                  errors.code ? 'error' : ''
+                }`}
+                placeholder="Antre kòd pwodwi a"
+              />
+            </div>
+            {errors.code && (
+              <p className="mobile-field-error">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <span>{errors.code}</span>
+              </p>
+            )}
+          </div>
+
+          <div className="mobile-form-group">
+            <label className="mobile-label required">
+              Non Pwodwi
+            </label>
+            <div className="relative">
+              <Package className="absolute left-3 top-4 w-5 h-5 text-gray-400" />
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
-                className={`mobile-input ${
-                  errors.name ? 'border-red-500' : 'border-gray-300'
+                className={`mobile-input pl-12 ${
+                  errors.name ? 'error' : ''
                 }`}
                 placeholder="Antre non pwodwi a"
               />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-              )}
             </div>
+            {errors.name && (
+              <p className="mobile-field-error">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <span>{errors.name}</span>
+              </p>
+            )}
+          </div>
 
-            {/* Category */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Kategori *
-              </label>
+          <div className="mobile-form-divider">
+            <span>Klasifikasyon</span>
+          </div>
+
+          <div className="mobile-form-group">
+            <label className="mobile-label required">
+              Kategori
+            </label>
+            <div className="relative">
+              <svg className="absolute left-3 top-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
               <select
                 value={formData.category_id}
                 onChange={(e) => handleInputChange('category_id', e.target.value)}
-                className={`mobile-input ${
-                  errors.category_id ? 'border-red-500' : 'border-gray-300'
+                className={`mobile-input pl-12 ${
+                  errors.category_id ? 'error' : ''
                 }`}
               >
                 <option value="">Chwazi yon kategori</option>
@@ -175,10 +203,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
                   </option>
                 ))}
               </select>
-              {errors.category_id && (
-                <p className="text-red-500 text-sm mt-1">{errors.category_id}</p>
-              )}
             </div>
+            {errors.category_id && (
+              <p className="mobile-field-error">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <span>{errors.category_id}</span>
+              </p>
+            )}
+          </div>
 
             {/* Supplier */}
             <div>
@@ -371,30 +405,40 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onClo
           </div>
 
           {/* Actions */}
-          <div className="flex flex-col space-y-3 pt-4">
+          <div className="flex flex-col gap-4 pt-6">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Ap sove...</span>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center space-x-2">
+                  <Save className="w-5 h-5" />
+                  <span>{product ? 'Modifye Pwodwi' : 'Sove Pwodwi'}</span>
+                </div>
+              )}
+            </button>
             <button
               type="button"
               onClick={onClose}
               className="btn-secondary w-full"
-            >
-              Anile
-            </button>
-            <button
-              type="submit"
               disabled={loading}
-              className="btn-primary w-full flex items-center justify-center space-x-2 disabled:opacity-50"
             >
-              {loading ? (
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <>
-                  <Save className="w-5 h-5" />
-                  <span>{product ? 'Modifye' : 'Sove'}</span>
-                </>
-              )}
+              <div className="flex items-center justify-center space-x-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Anile</span>
+              </div>
             </button>
           </div>
         </form>
+      </div>
     </MobileFormContainer>
   );
 };

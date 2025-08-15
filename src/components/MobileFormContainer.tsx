@@ -248,35 +248,42 @@ export const MobileFormContainer: React.FC<MobileFormContainerProps> = ({
       
       {/* Form container */}
       <div className="mobile-modal-content">
-        {/* Header with title and navigation */}
+        {/* Enhanced Professional Header with title and navigation */}
         {title && (
-          <div className="mobile-fullscreen-header">
-            <div className="flex items-center justify-between px-4 py-3">
-              <button
-                onClick={onClose}
-                className="p-2 -ml-2 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-colors"
-                aria-label="Close"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-              
-              <h1 className="text-lg font-semibold text-white text-center flex-1">
-                {title}
-              </h1>
-              
-              {onSave && (
+          <div className="mobile-header mobile-fullscreen-header">
+            <div className="mobile-header-content">
+              <div className="flex items-center justify-between">
                 <button
-                  onClick={onSave}
-                  className="p-2 -mr-2 text-white hover:bg-white hover:bg-opacity-10 rounded-lg transition-colors"
-                  aria-label="Save"
+                  onClick={onClose}
+                  className="p-3 -ml-2 text-white hover:bg-white hover:bg-opacity-20 rounded-xl transition-all tap-target"
+                  aria-label="Close"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
-              )}
+                
+                <div className="flex-1 text-center px-4">
+                  <h1 className="mobile-header-title">
+                    {title}
+                  </h1>
+                  <p className="mobile-header-subtitle">
+                    DEB CARGO SHIPPING LLC
+                  </p>
+                </div>
+                
+                {onSave && (
+                  <button
+                    onClick={onSave}
+                    className="p-3 -mr-2 text-white hover:bg-white hover:bg-opacity-20 rounded-xl transition-all tap-target"
+                    aria-label="Save"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         )}
