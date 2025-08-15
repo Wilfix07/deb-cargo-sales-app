@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LogIn, User, Lock, UserPlus, Eye, EyeOff, Mail } from 'lucide-react';
 import { Logo } from './Logo';
+import { MobileFormContainer } from './MobileFormContainer';
 import { UserRole } from '../types';
 
 interface LoginFormProps {
@@ -101,9 +102,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
   if (showResetForm) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-2 sm:p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden mx-2 sm:mx-0">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-center">
+      <MobileFormContainer
+        title="Reset Modpas"
+        onClose={() => {
+          setShowResetForm(false);
+          setResetMessage(null);
+          setResetEmail('');
+        }}
+        enableSwipeNavigation={true}
+        scrollToTopOnMount={true}
+        className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"
+      >
+        <div className="mobile-form">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-center rounded-2xl mb-6">
             <div className="flex justify-center mb-4">
               <Logo size="large" />
             </div>
@@ -115,53 +126,40 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             <p className="text-blue-100 text-sm sm:text-base">Antre email ou an pou reset modpas ou</p>
           </div>
 
-          <div className="p-6 sm:p-8">
-            <button
-              onClick={() => {
-                setShowResetForm(false);
-                setResetMessage(null);
-                setResetEmail('');
-              }}
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium mb-4"
-            >
-              ← Retounen nan Login
-            </button>
+          {resetMessage && (
+            <div className={`mobile-form-group ${
+              resetMessage.type === 'success' 
+                ? 'mobile-alert-success' 
+                : 'mobile-alert-error'
+            }`}>
+              <p className="text-sm">{resetMessage.message}</p>
+            </div>
+          )}
 
-            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Reset Modpas ou</h2>
-            
-            {resetMessage && (
-              <div className={`mb-4 p-3 rounded-lg ${
-                resetMessage.type === 'success' 
-                  ? 'bg-green-50 border border-green-200 text-green-800' 
-                  : 'bg-red-50 border border-red-200 text-red-800'
-              }`}>
-                <p className="text-sm">{resetMessage.message}</p>
+          <form onSubmit={handleResetPassword} className="space-y-6">
+            <div className="mobile-form-group">
+              <label className="mobile-label">
+                Email
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <input
+                  type="email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
+                  className="mobile-input pl-10"
+                  placeholder="Antre email ou"
+                  disabled={resetLoading}
+                  required
+                />
               </div>
-            )}
+            </div>
 
-            <form onSubmit={handleResetPassword} className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Email
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                  <input
-                    type="email"
-                    value={resetEmail}
-                    onChange={(e) => setResetEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base"
-                    placeholder="Antre email ou"
-                    disabled={resetLoading}
-                    required
-                  />
-                </div>
-              </div>
-
+            <div className="flex flex-col space-y-3">
               <button
                 type="submit"
                 disabled={resetLoading}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-semibold flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary w-full flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {resetLoading ? (
                   <>
@@ -175,16 +173,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                   </>
                 )}
               </button>
-            </form>
-          </div>
+            </div>
+          </form>
         </div>
-      </div>
+      </MobileFormContainer>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-2 sm:p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden mx-2 sm:mx-0">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden mx-2 sm:mx-0 mobile-form-container">
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-center">
           <div className="flex justify-center mb-4">
             <Logo size="large" />
@@ -199,20 +197,20 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           </p>
         </div>
 
-        <div className="p-6 sm:p-8">
+        <div className="p-6 sm:p-8 mobile-form">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
             {userRole === 'Teller' ? 'Konekte nan Kont ou' : 'Sign In to Your Account'}
           </h2>
           
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800 text-sm">{error}</p>
+            <div className="mobile-alert-error mb-4">
+              <p className="text-sm">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <div className="mobile-form-group">
+              <label className="mobile-label">
                 {userRole === 'Teller' ? 'Non Itilizatè' : 'Username'}
               </label>
               <div className="relative">
@@ -221,8 +219,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                   type="text"
                   value={formData.username}
                   onChange={(e) => handleInputChange('username', e.target.value)}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base bg-white text-gray-900 ${
-                    formErrors.username ? 'border-red-500' : 'border-gray-300'
+                  className={`mobile-input pl-10 ${
+                    formErrors.username ? 'border-red-500' : ''
                   }`}
                   placeholder={userRole === 'Teller' ? 'Antre non itilizatè ou' : 'Enter your username'}
                   disabled={loading}
@@ -233,8 +231,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <div className="mobile-form-group">
+              <label className="mobile-label">
                 {userRole === 'Teller' ? 'Modpas' : 'Password'}
               </label>
               <div className="relative">
@@ -243,8 +241,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base bg-white text-gray-900 ${
-                    formErrors.password ? 'border-red-500' : 'border-gray-300'
+                  className={`mobile-input pl-10 pr-12 ${
+                    formErrors.password ? 'border-red-500' : ''
                   }`}
                   placeholder={userRole === 'Teller' ? 'Antre modpas ou' : 'Enter your password'}
                   disabled={loading}
@@ -252,7 +250,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors tap-target"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -265,7 +263,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all font-semibold flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary w-full flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -284,7 +282,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           <div className="mt-4 text-center">
             <button
               onClick={() => setShowResetForm(true)}
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+              className="text-blue-600 hover:text-blue-700 text-sm font-medium tap-target"
               disabled={loading}
             >
               {userRole === 'Teller' ? 'Bliye modpas ou?' : 'Forgot your password?'}
@@ -296,7 +294,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               {userRole === 'Teller' ? 'Ou pa gen kont?' : "Don't have an account?"}{' '}
               <button
                 onClick={onSwitchToRegister}
-                className="text-blue-600 hover:text-blue-700 font-semibold"
+                className="text-blue-600 hover:text-blue-700 font-semibold tap-target"
                 disabled={loading}
               >
                 {userRole === 'Teller' ? 'Kreye yon kont' : 'Create an account'}

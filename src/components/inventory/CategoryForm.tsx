@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { X, Save, Grid3X3 } from 'lucide-react';
 import { InventoryService } from '../../services/inventoryService';
 import { Category } from '../../types/inventory';
+import { MobileFormContainer } from '../MobileFormContainer';
 
 interface CategoryFormProps {
   onClose: () => void;
@@ -62,76 +63,65 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({ onClose, onSaved }) 
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex flex-col">
-      <div className="flex-1 bg-white overflow-hidden">
-        <div className="mobile-header safe-area-top">
-          <div className="flex items-center justify-between p-4">
-            <div className="flex items-center space-x-3">
-              <button onClick={onClose} className="tap-target rounded-full hover:bg-white hover:bg-opacity-20 transition-colors">
-                <X className="w-6 h-6 text-white" />
-              </button>
-              <div className="flex items-center space-x-2">
-                <Grid3X3 className="w-6 h-6 text-white" />
-                <div>
-                  <h1 className="text-lg font-bold text-white">Add Category</h1>
-                </div>
-              </div>
-            </div>
-          </div>
+    <MobileFormContainer
+      title="Add Category"
+      onClose={onClose}
+      onSave={() => {
+        const form = document.querySelector('form');
+        if (form) {
+          form.requestSubmit();
+        }
+      }}
+      enableSwipeNavigation={true}
+      scrollToTopOnMount={true}
+    >
+      <form onSubmit={onSubmit} className="mobile-form">
+        <div className="mobile-form-group">
+          <label className="mobile-label">Name *</label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => handleChange('name', e.target.value)}
+            className={`mobile-input ${errors.name ? 'border-red-500' : ''}`}
+            placeholder="Category name"
+          />
+          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
         </div>
 
-        <form onSubmit={onSubmit} className="flex-1 overflow-y-auto p-4 space-y-4 safe-area-bottom pb-24">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Name *</label>
-              <input
-                type="text"
-                value={form.name}
-                onChange={(e) => handleChange('name', e.target.value)}
-                className={`mobile-input ${errors.name ? 'border-red-500' : 'border-gray-300'}`}
-                placeholder="Category name"
-              />
-              {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
-            </div>
+        <div className="mobile-form-group">
+          <label className="mobile-label">Description</label>
+          <textarea
+            value={form.description}
+            onChange={(e) => handleChange('description', e.target.value)}
+            className="mobile-input"
+            placeholder="Short description"
+            rows={3}
+          />
+        </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-              <textarea
-                value={form.description}
-                onChange={(e) => handleChange('description', e.target.value)}
-                className="mobile-input"
-                placeholder="Short description"
-                rows={3}
-              />
-            </div>
+        <div className="mobile-form-group">
+          <label className="mobile-label">Parent Category (optional)</label>
+          <select
+            value={form.parent_id}
+            onChange={(e) => handleChange('parent_id', e.target.value)}
+            className="mobile-input"
+          >
+            <option value="">None</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Parent Category (optional)</label>
-              <select
-                value={form.parent_id}
-                onChange={(e) => handleChange('parent_id', e.target.value)}
-                className="mobile-input"
-              >
-                <option value="">None</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div className="sticky bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t border-gray-200 p-4">
-            <div className="flex flex-col space-y-3">
-              <button type="button" onClick={onClose} className="btn-secondary w-full">Cancel</button>
-              <button type="submit" className="btn-primary w-full flex items-center justify-center space-x-2" disabled={saving}>
-                <Save className="w-5 h-5" />
-                <span>{saving ? 'Saving...' : 'Save Category'}</span>
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className="flex flex-col space-y-3 pt-4">
+          <button type="button" onClick={onClose} className="btn-secondary w-full">Cancel</button>
+          <button type="submit" className="btn-primary w-full flex items-center justify-center space-x-2" disabled={saving}>
+            <Save className="w-5 h-5" />
+            <span>{saving ? 'Saving...' : 'Save Category'}</span>
+          </button>
+        </div>
+      </form>
+    </MobileFormContainer>
   );
 };
 

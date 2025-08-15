@@ -28,7 +28,7 @@ export const MobileFormContainer: React.FC<MobileFormContainerProps> = ({
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeout = useRef<NodeJS.Timeout>();
 
-  // Smooth scrolling utilities
+  // Enhanced smooth scrolling utilities with momentum and acceleration
   const smoothScrollTo = (position: number, duration: number = 300) => {
     if (!contentRef.current) return;
 
@@ -37,17 +37,37 @@ export const MobileFormContainer: React.FC<MobileFormContainerProps> = ({
     const distance = position - startPosition;
     const startTime = performance.now();
 
+    // Cancel any existing scroll animation
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
+    }
+
     const scrollStep = (currentTime: number) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       
-      // Easing function (cubic bezier)
-      const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+      // Enhanced easing function with momentum (ease-out-quart)
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       
-      container.scrollTop = startPosition + (distance * easeOutCubic);
+      container.scrollTop = startPosition + (distance * easeOutQuart);
       
       if (progress < 1) {
         requestAnimationFrame(scrollStep);
+      } else {
+        // Apply slight momentum at the end for natural feel
+        if (Math.abs(distance) > 50) {
+          const momentumDistance = distance * 0.05;
+          setTimeout(() => {
+            if (contentRef.current) {
+              contentRef.current.scrollTop = position + momentumDistance;
+              setTimeout(() => {
+                if (contentRef.current) {
+                  contentRef.current.scrollTop = position;
+                }
+              }, 50);
+            }
+          }, 50);
+        }
       }
     };
 
@@ -95,16 +115,20 @@ export const MobileFormContainer: React.FC<MobileFormContainerProps> = ({
     }, 150);
   };
 
-  // Handle swipe gestures for navigation
+  // Enhanced swipe gesture handling for smoother scrolling
   const handleSwipeUp = () => {
-    if (enableSwipeNavigation) {
-      scrollBy(-150); // Scroll up by 150px
+    if (enableSwipeNavigation && contentRef.current) {
+      const container = contentRef.current;
+      const scrollAmount = Math.min(container.clientHeight * 0.4, 250); // Scroll by 40% of viewport or 250px max
+      scrollBy(-scrollAmount);
     }
   };
 
   const handleSwipeDown = () => {
-    if (enableSwipeNavigation) {
-      scrollBy(150); // Scroll down by 150px
+    if (enableSwipeNavigation && contentRef.current) {
+      const container = contentRef.current;
+      const scrollAmount = Math.min(container.clientHeight * 0.4, 250); // Scroll by 40% of viewport or 250px max
+      scrollBy(scrollAmount);
     }
   };
 
@@ -267,12 +291,19 @@ export const MobileFormContainer: React.FC<MobileFormContainerProps> = ({
         >
           <div
             ref={contentRef}
-            className="mobile-fullscreen-content scrollbar-hide"
+            className="mobile-fullscreen-content scrollbar-hide mobile-form-container"
             onScroll={handleScroll}
             style={{
               scrollBehavior: 'smooth',
               WebkitOverflowScrolling: 'touch',
-              overscrollBehavior: 'contain'
+              overscrollBehavior: 'contain',
+              touchAction: 'pan-y',
+              // Enhanced momentum scrolling for iOS
+              WebkitMomentumScrollingTouch: 'touch',
+              // Better performance optimizations
+              willChange: 'scroll-position',
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden'
             }}
           >
             {children}
@@ -372,3 +403,4 @@ export const useFormScrolling = (containerRef: React.RefObject<HTMLDivElement>) 
     scrollToBottom
   };
 };
+

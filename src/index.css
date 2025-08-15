@@ -62,6 +62,12 @@
     user-select: text;
     /* Prevent zoom on focus for iOS */
     transform: translate3d(0, 0, 0);
+    /* Enhanced mobile touch support */
+    -webkit-tap-highlight-color: transparent;
+    /* Better scroll behavior in containers */
+    scroll-margin: 1rem;
+    /* iOS momentum scrolling fix */
+    -webkit-momentum-scrolling-touch: touch;
   }
   
   /* Mobile-optimized buttons with Android Material Design */
@@ -660,36 +666,53 @@
     @apply bg-blue-50 border border-blue-200 rounded-lg p-4 text-blue-800;
   }
   
-    /* Mobile form styling */
+    /* Enhanced mobile form styling with improved scrolling */
   .mobile-form {
     @apply space-y-4 p-4;
     /* Enable smooth scrolling */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+    /* Improve touch responsiveness */
+    touch-action: manipulation;
+    /* Better scroll snap for form sections */
+    scroll-snap-type: y proximity;
   }
 
   .mobile-form-group {
     @apply space-y-2;
     /* Optimize for touch scrolling */
     will-change: transform;
+    /* Scroll snap for better UX */
+    scroll-snap-align: start;
+    scroll-margin-top: 1rem;
   }
 
   .mobile-label {
     @apply block text-sm font-semibold text-gray-700;
   }
 
-  /* Enhanced form container */
+  /* Enhanced form container with improved mobile scrolling */
   .mobile-form-container {
-    /* Smooth momentum scrolling */
+    /* Enhanced momentum scrolling for iOS */
     -webkit-overflow-scrolling: touch;
-    /* Prevent overscroll */
+    /* Prevent overscroll bounce */
     overscroll-behavior: contain;
+    overscroll-behavior-y: contain;
     /* Smooth scrolling behavior */
     scroll-behavior: smooth;
-    /* Hardware acceleration */
+    /* Hardware acceleration for better performance */
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
-    perspective: 1000;
+    perspective: 1000px;
+    /* Optimize for scrolling performance */
+    will-change: scroll-position;
+    /* Better touch handling */
+    touch-action: pan-y;
+    /* Momentum scrolling for better feel */
+    -webkit-momentum-scrolling-touch: touch;
+    /* Scroll padding for better UX */
+    scroll-padding-top: 1rem;
+    scroll-padding-bottom: 2rem;
   }
   
   /* Mobile list styling */
@@ -882,9 +905,41 @@
     transform: translateZ(0);
   }
   
+  /* Enhanced mobile scrolling optimizations */
+  .mobile-form-container,
+  .mobile-fullscreen-content {
+    /* Better scroll performance */
+    -webkit-overflow-scrolling: touch;
+    /* Reduce scroll jank */
+    transform: translate3d(0, 0, 0);
+    /* Better momentum scrolling */
+    overscroll-behavior: contain;
+    /* Smooth deceleration */
+    scroll-behavior: smooth;
+  }
+  
   /* Reduce motion for better performance on mobile */
-  .mobile-card, .mobile-list-item {
+  .mobile-card, .mobile-list-item, .mobile-form-group {
     will-change: transform;
+    /* Better touch response */
+    touch-action: manipulation;
+  }
+  
+  /* Enhanced input focus for mobile */
+  .mobile-input:focus,
+  .mobile-input:active {
+    /* Prevent zoom on focus */
+    font-size: 16px;
+    /* Better visual feedback */
+    transform: scale(1.01);
+    transition: transform 0.1s ease;
+  }
+  
+  /* Better button feedback */
+  .btn-primary:active,
+  .btn-secondary:active {
+    transform: scale(0.98) translateZ(0);
+    transition: transform 0.1s ease;
   }
   
   /* Mobile-optimized shadows */
@@ -898,6 +953,17 @@
   
   .elevation-3 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  /* Smooth scroll snap for form sections */
+  .mobile-form {
+    scroll-snap-type: y proximity;
+    scroll-padding: 1rem;
+  }
+  
+  .mobile-form-group {
+    scroll-snap-align: start;
+    scroll-margin: 0.5rem;
   }
 }
 

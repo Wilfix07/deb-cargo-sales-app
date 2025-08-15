@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { UserPlus, User, Mail, Lock, FileText, ArrowLeft, Shield, Eye, EyeOff } from 'lucide-react';
 import { Logo } from './Logo';
+import { MobileFormContainer } from './MobileFormContainer';
 import { UserRole } from '../types';
 
 interface RegisterFormProps {
@@ -83,9 +84,15 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-2 sm:p-4">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden mx-2 sm:mx-0">
-        <div className="bg-gradient-to-r from-green-600 to-blue-600 p-8 text-center">
+    <MobileFormContainer
+      title="Kreye Nouvo Kont"
+      onClose={onSwitchToLogin}
+      enableSwipeNavigation={true}
+      scrollToTopOnMount={true}
+      className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"
+    >
+      <div className="mobile-form">
+        <div className="bg-gradient-to-r from-green-600 to-blue-600 p-8 text-center rounded-2xl mb-6">
           <div className="flex justify-center mb-4">
             <Logo size="large" />
           </div>
@@ -97,34 +104,34 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
           <p className="text-green-100 text-sm sm:text-base">Create New Account</p>
         </div>
 
-        <div className="p-6 sm:p-8">
-          <div className="flex items-center mb-6">
-            <button
-              onClick={onSwitchToLogin}
-              className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
-              disabled={loading}
-            >
-              <ArrowLeft className="w-4 h-4 mr-1" />
-              Back to Login
-            </button>
-          </div>
+        <div className="flex items-center mb-6">
+          <button
+            onClick={onSwitchToLogin}
+            className="flex items-center text-gray-600 hover:text-gray-800 transition-colors tap-target"
+            disabled={loading}
+          >
+            <ArrowLeft className="w-4 h-4 mr-1" />
+            Back to Login
+          </button>
+        </div>
 
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Create Your Account</h2>
-          
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-red-800 text-sm">{error}</p>
-            </div>
-          )}
-
-          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-blue-800 text-sm">
-              <strong>Note:</strong> New accounts are created with "Teller" role by default. An Admin can change your role after your account is created.
-            </p>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Create Your Account</h2>
+        
+        {error && (
+          <div className="mobile-alert-error mb-4">
+            <p className="text-sm">{error}</p>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+        )}
+
+        <div className="mobile-alert-info mb-4">
+          <p className="text-sm">
+            <strong>Note:</strong> New accounts are created with "Teller" role by default. An Admin can change your role after your account is created.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="mobile-form-group">
+              <label className="mobile-label">
                 Username
               </label>
               <div className="relative">
@@ -133,8 +140,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   type="text"
                   value={formData.username}
                   onChange={(e) => handleInputChange('username', e.target.value)}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base ${
-                    formErrors.username ? 'border-red-500' : 'border-gray-300'
+                  className={`mobile-input pl-10 ${
+                    formErrors.username ? 'border-red-500' : ''
                   }`}
                   placeholder="Choose a username"
                   disabled={loading}
@@ -145,8 +152,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <div className="mobile-form-group">
+              <label className="mobile-label">
                 Email
               </label>
               <div className="relative">
@@ -155,8 +162,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   type="email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base ${
-                    formErrors.email ? 'border-red-500' : 'border-gray-300'
+                  className={`mobile-input pl-10 ${
+                    formErrors.email ? 'border-red-500' : ''
                   }`}
                   placeholder="Enter your email"
                   disabled={loading}
@@ -167,8 +174,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <div className="mobile-form-group">
+              <label className="mobile-label">
                 Full Name
               </label>
               <div className="relative">
@@ -177,8 +184,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => handleInputChange('fullName', e.target.value)}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base ${
-                    formErrors.fullName ? 'border-red-500' : 'border-gray-300'
+                  className={`mobile-input pl-10 ${
+                    formErrors.fullName ? 'border-red-500' : ''
                   }`}
                   placeholder="Enter your full name"
                   disabled={loading}
@@ -190,8 +197,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             </div>
 
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <div className="mobile-form-group">
+              <label className="mobile-label">
                 Password
               </label>
               <div className="relative">
@@ -200,8 +207,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base ${
-                    formErrors.password ? 'border-red-500' : 'border-gray-300'
+                  className={`mobile-input pl-10 pr-12 ${
+                    formErrors.password ? 'border-red-500' : ''
                   }`}
                   placeholder="Create a password"
                   disabled={loading}
@@ -209,7 +216,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors tap-target"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -219,8 +226,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <div className="mobile-form-group">
+              <label className="mobile-label">
                 Confirm Password
               </label>
               <div className="relative">
@@ -229,8 +236,8 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   type={showConfirmPassword ? "text" : "password"}
                   value={formData.confirmPassword}
                   onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base ${
-                    formErrors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+                  className={`mobile-input pl-10 pr-12 ${
+                    formErrors.confirmPassword ? 'border-red-500' : ''
                   }`}
                   placeholder="Confirm your password"
                   disabled={loading}
@@ -238,7 +245,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors tap-target"
                 >
                   {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -251,7 +258,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 px-6 rounded-lg hover:from-green-700 hover:to-blue-700 transition-all font-semibold flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary w-full flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -267,7 +274,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
             </button>
           </form>
         </div>
-      </div>
-    </div>
+      </MobileFormContainer>
   );
 };
